@@ -1,0 +1,3 @@
+C:/Users/KOMP_JOUT8/source/repos/OpenSLBiomorph/out/build/x64-Debug/CMakeFiles/OpenSLBiomorph.dir
+C:/Users/KOMP_JOUT8/source/repos/OpenSLBiomorph/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/KOMP_JOUT8/source/repos/OpenSLBiomorph/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

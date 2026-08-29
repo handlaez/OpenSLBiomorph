@@ -55,7 +55,7 @@ __kernel void generate_biomorph(
 
         if (useSwitch) {
             if (i % 2 == 1) d = complex_inv_pow(c1, i) - d;
-            else           d = complex_inv_pow(c2, i) - d;
+            else            d = complex_inv_pow(c2, i) - d;
         }
     }
 
