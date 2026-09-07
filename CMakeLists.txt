@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 find_package(OpenCL REQUIRED)
 
-add_executable(OpenSLBiomorph Main.cpp)
+add_executable(OpenSLBiomorph Main.cpp "src/BiomorphParameters.hpp" "src/BiomorphGenerator.cpp")
 
 target_link_libraries(OpenSLBiomorph PRIVATE OpenCL::OpenCL)
 
