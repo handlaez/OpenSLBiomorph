@@ -17,6 +17,7 @@ public:
     ~BiomorphWorker();
 
 public slots:
+    void initialize();
     void generatePreview(BiomorphParameters params);
     void generateFull(BiomorphParameters params);
 
@@ -30,7 +31,7 @@ signals:
     void errorOccurred(QString message);
 
 private:
-    BiomorphGenerator* m_generator = nullptr;
+    BiomorphGenerator* generator_ = nullptr;
 };
 
-#endif // !BIOMORPH_WORKER_HPP
+#endif // !BIOMORPH_worker_HPP

@@ -3,12 +3,23 @@
 
 BiomorphWorker::BiomorphWorker(QObject* parent) : QObject(parent)
 {
-    m_generator = new BiomorphGenerator;
+}
+
+void BiomorphWorker::initialize()
+{
+    try
+    {
+        generator_ = new BiomorphGenerator;
+    }
+    catch (const std::exception& e)
+    {
+        emit errorOccurred(QString::fromStdString(e.what()));
+    }
 }
 
 BiomorphWorker::~BiomorphWorker()
 {
-    delete m_generator;
+    delete generator_;
 }
 
 void BiomorphWorker::generatePreview(BiomorphParameters params)
@@ -17,7 +28,7 @@ void BiomorphWorker::generatePreview(BiomorphParameters params)
     {
         emit generationStarted();
 
-        BiomorphImage image = m_generator->generate(params);
+        BiomorphImage image = generator_->generate(params);
 
         emit previewReady(std::move(image));
         emit generationFinished();
@@ -35,7 +46,7 @@ void BiomorphWorker::generateFull(BiomorphParameters params)
     {
         emit generationStarted();
 
-        BiomorphImage image = m_generator->generate(params);
+        BiomorphImage image = generator_->generate(params);
 
         emit fullImageReady(std::move(image));
         emit generationFinished();

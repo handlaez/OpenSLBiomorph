@@ -1,6 +1,8 @@
 #ifndef BIOMORPH_PARAMETERS_HPP
 #define BIOMORPH_PARAMETERS_HPP
 
+#include <QMetaType>
+
 struct BiomorphParameters
 {
     int width = 512;
@@ -25,5 +27,7 @@ struct BiomorphParameters
     int K = 15;
     int useSwitch = 1;
 };
+
+Q_DECLARE_METATYPE(BiomorphParameters)
 
 #endif

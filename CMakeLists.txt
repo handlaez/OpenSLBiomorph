@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_Required(VERSION 3.10)
 project(OpenSLBiomorph LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -14,14 +14,13 @@ find_package(OpenCL REQUIRED)
 
 qt_add_executable(OpenSLBiomorph
     main.cpp
-
     src/BiomorphGenerator.cpp
     src/BiomorphGenerator.hpp
-
     src/BiomorphWorker.cpp
     src/BiomorphWorker.hpp
-
     src/BiomorphParameters.hpp
+    src/BiomorphController.cpp
+    src/BiomorphController.hpp
 )
 
 qt_add_qml_module(OpenSLBiomorph

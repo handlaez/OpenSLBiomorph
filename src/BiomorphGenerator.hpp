@@ -23,7 +23,7 @@ private:
 
 private:
     struct OpenCLState;
-    OpenCLState* m_cl = nullptr;
+    OpenCLState* cl_ = nullptr;
 };
 
 #endif

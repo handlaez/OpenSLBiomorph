@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <QMetaType>
 
 struct BiomorphImage
 {
@@ -22,5 +23,7 @@ struct BiomorphImage
         return width > 0 && height > 0 && pixels.size() == static_cast<std::size_t>(width) * static_cast<std::size_t>(height) * 4;
     }
 };
+
+Q_DECLARE_METATYPE(BiomorphImage)
 
 #endif

@@ -42,28 +42,28 @@ BiomorphImage BiomorphGenerator::generate(const BiomorphParameters& params)
 
     cl_int err;
 
-    cl_mem d_image = clCreateBuffer(m_cl->context, CL_MEM_WRITE_ONLY, imageSize, nullptr, &err);
+    cl_mem d_image = clCreateBuffer(cl_->context, CL_MEM_WRITE_ONLY, imageSize, nullptr, &err);
     checkError(err, "clCreateBuffer");
 
     cl_double2 gc1 = { params.gc1x, params.gc1y };
     cl_double2 gc2 = { params.gc2x, params.gc2y };
 
     // The kernel arguments
-    checkError(clSetKernelArg(m_cl->kernel, 0, sizeof(cl_mem), &d_image), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 1, sizeof(int), &params.width), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 2, sizeof(int), &params.height), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 3, sizeof(double), &params.xmin), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 4, sizeof(double), &params.xmax), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 5, sizeof(double), &params.ymin), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 6, sizeof(double), &params.ymax), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 7, sizeof(double), &params.alpha), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 8, sizeof(double), &params.beta), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 9, sizeof(cl_double2), &gc1), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 10, sizeof(cl_double2), &gc2), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 11, sizeof(int), &params.K), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 12, sizeof(double), &params.R), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 13, sizeof(double), &params.freq), "clSetKernelArg");
-    checkError(clSetKernelArg(m_cl->kernel, 14, sizeof(int), &params.useSwitch), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 0, sizeof(cl_mem), &d_image), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 1, sizeof(int), &params.width), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 2, sizeof(int), &params.height), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 3, sizeof(double), &params.xmin), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 4, sizeof(double), &params.xmax), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 5, sizeof(double), &params.ymin), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 6, sizeof(double), &params.ymax), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 7, sizeof(double), &params.alpha), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 8, sizeof(double), &params.beta), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 9, sizeof(cl_double2), &gc1), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 10, sizeof(cl_double2), &gc2), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 11, sizeof(int), &params.K), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 12, sizeof(double), &params.R), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 13, sizeof(double), &params.freq), "clSetKernelArg");
+    checkError(clSetKernelArg(cl_->kernel, 14, sizeof(int), &params.useSwitch), "clSetKernelArg");
 
     size_t globalWorkSize[2] = {
         static_cast<size_t>(params.width),
@@ -71,11 +71,11 @@ BiomorphImage BiomorphGenerator::generate(const BiomorphParameters& params)
     };
 
     checkError(
-        clEnqueueNDRangeKernel(m_cl->queue, m_cl->kernel, 2, nullptr, globalWorkSize, nullptr, 0, nullptr, nullptr),
+        clEnqueueNDRangeKernel(cl_->queue, cl_->kernel, 2, nullptr, globalWorkSize, nullptr, 0, nullptr, nullptr),
         "clEnqueueNDRangeKernel");
 
     checkError(
-        clEnqueueReadBuffer(m_cl->queue, d_image, CL_TRUE, 0, imageSize, result.pixels.data(), 0, nullptr, nullptr),
+        clEnqueueReadBuffer(cl_->queue, d_image, CL_TRUE, 0, imageSize, result.pixels.data(), 0, nullptr, nullptr),
         "clEnqueueReadBuffer");
 
     clReleaseMemObject(d_image);
@@ -93,16 +93,16 @@ void BiomorphGenerator::checkError(int error, const char* operation)
 
 void BiomorphGenerator::initializeOpenCL()
 {
-    m_cl = new OpenCLState;
+    cl_ = new OpenCLState;
     cl_int err;
 
-    checkError(clGetPlatformIDs(1, &m_cl->platform, nullptr), "clGetPlatformIDs");
-    checkError(clGetDeviceIDs(m_cl->platform, CL_DEVICE_TYPE_GPU, 1, &m_cl->device, nullptr), "clGetDeviceIDs");
+    checkError(clGetPlatformIDs(1, &cl_->platform, nullptr), "clGetPlatformIDs");
+    checkError(clGetDeviceIDs(cl_->platform, CL_DEVICE_TYPE_GPU, 1, &cl_->device, nullptr), "clGetDeviceIDs");
 
-    m_cl->context = clCreateContext(nullptr, 1, &m_cl->device, nullptr, nullptr, &err);
+    cl_->context = clCreateContext(nullptr, 1, &cl_->device, nullptr, nullptr, &err);
     checkError(err, "clCreateContext");
 
-    m_cl->queue = clCreateCommandQueueWithProperties(m_cl->context, m_cl->device, nullptr, &err);
+    cl_->queue = clCreateCommandQueueWithProperties(cl_->context, cl_->device, nullptr, &err);
     checkError(err, "clCreateCommandQueueWithProperties");
 
     std::ifstream file("kernel.cl");
@@ -115,45 +115,45 @@ void BiomorphGenerator::initializeOpenCL()
     std::string source = buffer.str();
     const char* sourcePtr = source.c_str();
 
-    m_cl->program = clCreateProgramWithSource(m_cl->context, 1, &sourcePtr, nullptr, &err);
+    cl_->program = clCreateProgramWithSource(cl_->context, 1, &sourcePtr, nullptr, &err);
 
     checkError(err, "clCreateProgramWithSource");
-    err = clBuildProgram(m_cl->program, 1, &m_cl->device, nullptr, nullptr, nullptr);
+    err = clBuildProgram(cl_->program, 1, &cl_->device, nullptr, nullptr, nullptr);
 
     if (err != CL_SUCCESS)
     {
         size_t logSize = 0;
 
-        clGetProgramBuildInfo(m_cl->program, m_cl->device, CL_PROGRAM_BUILD_LOG, 0, nullptr, &logSize);
+        clGetProgramBuildInfo(cl_->program, cl_->device, CL_PROGRAM_BUILD_LOG, 0, nullptr, &logSize);
 
         std::vector<char> log(logSize);
 
-        clGetProgramBuildInfo(m_cl->program, m_cl->device, CL_PROGRAM_BUILD_LOG, logSize, log.data(), nullptr);
+        clGetProgramBuildInfo(cl_->program, cl_->device, CL_PROGRAM_BUILD_LOG, logSize, log.data(), nullptr);
 
         throw std::runtime_error("OpenCL build failed:\n" + std::string(log.data()));
     }
 
-    m_cl->kernel = clCreateKernel(m_cl->program, "generate_biomorph", &err);
+    cl_->kernel = clCreateKernel(cl_->program, "generate_biomorph", &err);
     checkError(err, "clCreateKernel");
 }
 
 void BiomorphGenerator::cleanupOpenCL()
 {
-    if (!m_cl)
+    if (!cl_)
         return;
 
-    if (m_cl->kernel)
-        clReleaseKernel(m_cl->kernel);
+    if (cl_->kernel)
+        clReleaseKernel(cl_->kernel);
 
-    if (m_cl->program)
-        clReleaseProgram(m_cl->program);
+    if (cl_->program)
+        clReleaseProgram(cl_->program);
 
-    if (m_cl->queue)
-        clReleaseCommandQueue(m_cl->queue);
+    if (cl_->queue)
+        clReleaseCommandQueue(cl_->queue);
 
-    if (m_cl->context)
-        clReleaseContext(m_cl->context);
+    if (cl_->context)
+        clReleaseContext(cl_->context);
 
-    delete m_cl;
-    m_cl = nullptr;
+    delete cl_;
+    cl_ = nullptr;
 }
