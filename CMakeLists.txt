@@ -9,7 +9,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 list(APPEND CMAKE_PREFIX_PATH "C:/Qt/6.11.2/msvc2022_64")
-find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
 find_package(OpenCL REQUIRED)
 
 qt_add_executable(OpenSLBiomorph
@@ -35,6 +35,7 @@ qt_add_qml_module(OpenSLBiomorph
 target_link_libraries(OpenSLBiomorph
     PRIVATE
         Qt6::Quick
+        Qt6::QuickControls2
         OpenCL::OpenCL
 )
 

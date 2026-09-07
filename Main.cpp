@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
 
 #include "src/BiomorphController.hpp"
 #include "src/BiomorphImage.hpp"
@@ -9,6 +10,8 @@
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
+
+    QQuickStyle::setStyle("Fusion");
 
     qRegisterMetaType<BiomorphParameters>();
     qRegisterMetaType<BiomorphImage>();
