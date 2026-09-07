@@ -18,9 +18,11 @@ qt_add_executable(OpenSLBiomorph
     src/BiomorphGenerator.hpp
     src/BiomorphWorker.cpp
     src/BiomorphWorker.hpp
+    src/BiomorphImage.hpp
     src/BiomorphParameters.hpp
     src/BiomorphController.cpp
     src/BiomorphController.hpp
+    src/stb_image_write.cpp
 )
 
 qt_add_qml_module(OpenSLBiomorph
@@ -44,3 +46,17 @@ configure_file(
     ${CMAKE_CURRENT_BINARY_DIR}/kernel.cl 
     COPYONLY
 )
+
+# deploy Qt runtime dependencies next to the .exe
+if(WIN32)
+    get_filename_component(QT_ROOT "${Qt6_DIR}/../../../" ABSOLUTE)
+    set(WINDEPLOYQT "${QT_ROOT}/bin/windeployqt.exe")
+
+    add_custom_command(TARGET OpenSLBiomorph POST_BUILD
+        COMMAND "${WINDEPLOYQT}"
+                --debug
+                --qmldir "${CMAKE_CURRENT_SOURCE_DIR}/qml"
+                "$<TARGET_FILE:OpenSLBiomorph>"
+        COMMENT "Deploying Qt runtime dependencies..."
+    )
+endif()

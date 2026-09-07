@@ -33,16 +33,17 @@ BiomorphGenerator::~BiomorphGenerator()
 BiomorphImage BiomorphGenerator::generate(const BiomorphParameters& params)
 {
     BiomorphImage result;
+
     result.width = params.width;
     result.height = params.height;
 
     const size_t imageSize = static_cast<size_t>(params.width) * static_cast<size_t>(params.height) * 4;
 
-    std::vector<unsigned char> pixels(imageSize);
+    result.pixels.resize(imageSize);
 
     cl_int err;
-
     cl_mem d_image = clCreateBuffer(cl_->context, CL_MEM_WRITE_ONLY, imageSize, nullptr, &err);
+
     checkError(err, "clCreateBuffer");
 
     cl_double2 gc1 = { params.gc1x, params.gc1y };
