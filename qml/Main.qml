@@ -14,6 +14,24 @@ ApplicationWindow {
     minimumWidth: 900
     minimumHeight: 650
 
+    function fixRatio() {
+        let cx = (biomorph.xmin + biomorph.xmax) / 2.0;
+        let cy = (biomorph.ymin + biomorph.ymax) / 2.0;
+        
+        let w = Math.abs(biomorph.xmax - biomorph.xmin);
+        let h = Math.abs(biomorph.ymax - biomorph.ymin);
+        
+        // Pick the larger dimension so we don't crop out what you're seeing
+        let size = Math.max(w, h); 
+        
+        biomorph.xmin = cx - size / 2.0;
+        biomorph.xmax = cx + size / 2.0;
+        biomorph.ymin = cy - size / 2.0;
+        biomorph.ymax = cy + size / 2.0;
+        
+        biomorph.generatePreview();
+    }
+
     function pan(dx, dy) {
         let w = biomorph.xmax - biomorph.xmin;
         let h = biomorph.ymax - biomorph.ymin;
@@ -90,7 +108,6 @@ ApplicationWindow {
                         title: "Domain"
                         Layout.fillWidth: true
 
-                        // Wrap the contents in a ColumnLayout to stack them vertically
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 12
@@ -196,6 +213,13 @@ ApplicationWindow {
                                     onEditingFinished: {
                                         biomorph.ymax = Number(text)
                                     }
+                                }
+
+                                Button {
+                                    text: "Fix 1:1 Ratio"
+                                    Layout.fillWidth: true
+                                    enabled: !biomorph.generating
+                                    onClicked: window.fixRatio()
                                 }
                             }
                         }
