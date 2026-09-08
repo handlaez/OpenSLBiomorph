@@ -48,7 +48,15 @@ Unlike standard Mandelbrot or Julia fractals, the biomorph kernel utilizes a two
 <img width="4000" height="4000" alt="bio4" src="https://github.com/user-attachments/assets/67176eb1-fbcf-474a-b916-5c6ec985d150" />
 
 ## Building and Running
-\<will be here once I make sure it works\>
+
+Ensure you have your environment set up and run the following commands:
+   ```bash
+   git clone https://github.com/handlaez/OpenCLBiomorph.git
+   cd OpenCLBiomorph
+   cmake -B build -S . -DCMAKE_PREFIX_PATH="C:/YourQtPath/version/msvc2022_64"
+   cmake --build build --config Release
+   ./build/OpenCLBiomorph.exe
+   ```
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
