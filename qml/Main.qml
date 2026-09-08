@@ -14,6 +14,32 @@ ApplicationWindow {
     minimumWidth: 900
     minimumHeight: 650
 
+    function pan(dx, dy) {
+        let w = biomorph.xmax - biomorph.xmin;
+        let h = biomorph.ymax - biomorph.ymin;
+        
+        biomorph.xmin += w * dx;
+        biomorph.xmax += w * dx;
+        biomorph.ymin += h * dy;
+        biomorph.ymax += h * dy;
+        
+        biomorph.generatePreview();
+    }
+
+    function zoom(factor) {
+        let cx = (biomorph.xmin + biomorph.xmax) / 2.0;
+        let cy = (biomorph.ymin + biomorph.ymax) / 2.0;
+        let w = biomorph.xmax - biomorph.xmin;
+        let h = biomorph.ymax - biomorph.ymin;
+        
+        biomorph.xmin = cx - (w * factor) / 2.0;
+        biomorph.xmax = cx + (w * factor) / 2.0;
+        biomorph.ymin = cy - (h * factor) / 2.0;
+        biomorph.ymax = cy + (h * factor) / 2.0;
+        
+        biomorph.generatePreview();
+    }
+
     FileDialog {
         id: exportDialog
 
@@ -64,61 +90,112 @@ ApplicationWindow {
                         title: "Domain"
                         Layout.fillWidth: true
 
-                        GridLayout {
+                        // Wrap the contents in a ColumnLayout to stack them vertically
+                        ColumnLayout {
                             anchors.fill: parent
-                            columns: 2
-                            columnSpacing: 10
-                            rowSpacing: 8
+                            spacing: 12
 
-                            Label { text: "X min" }
-
-                            TextField {
+                            GroupBox {
+                                title: "Navigation"
                                 Layout.fillWidth: true
-                                text: biomorph.xmin
 
-                                validator: DoubleValidator {}
+                                GridLayout {
+                                    anchors.fill: parent
+                                    columns: 3
+                                    columnSpacing: 8
+                                    rowSpacing: 8
 
-                                onEditingFinished: {
-                                    biomorph.xmin = Number(text)
+                                    // Top Row
+                                    Button {
+                                        text: "Zoom In"
+                                        Layout.fillWidth: true
+                                        enabled: !biomorph.generating
+                                        onClicked: window.zoom(0.8) 
+                                    }
+                                    Button {
+                                        text: "Up"
+                                        Layout.fillWidth: true
+                                        enabled: !biomorph.generating
+                                        onClicked: window.pan(0, 0.1) 
+                                    }
+                                    Button {
+                                        text: "Zoom Out"
+                                        Layout.fillWidth: true
+                                        enabled: !biomorph.generating
+                                        onClicked: window.zoom(1.25) 
+                                    }
+
+                                    // Bottom Row
+                                    Button {
+                                        text: "Left"
+                                        Layout.fillWidth: true
+                                        enabled: !biomorph.generating
+                                        onClicked: window.pan(-0.1, 0)
+                                    }
+                                    Button {
+                                        text: "Down"
+                                        Layout.fillWidth: true
+                                        enabled: !biomorph.generating
+                                        onClicked: window.pan(0, -0.1)
+                                    }
+                                    Button {
+                                        text: "Right"
+                                        Layout.fillWidth: true
+                                        enabled: !biomorph.generating
+                                        onClicked: window.pan(0.1, 0)
+                                    }
                                 }
                             }
 
-                            Label { text: "X max" }
-
-                            TextField {
+                            GridLayout {
+                                // Replaced anchors.fill: parent with Layout properties
                                 Layout.fillWidth: true
-                                text: biomorph.xmax
+                                columns: 2
+                                columnSpacing: 10
+                                rowSpacing: 8
 
-                                validator: DoubleValidator {}
+                                Label { text: "X min" }
 
-                                onEditingFinished: {
-                                    biomorph.xmax = Number(text)
+                                TextField {
+                                    Layout.fillWidth: true
+                                    text: biomorph.xmin
+                                    validator: DoubleValidator {}
+                                    onEditingFinished: {
+                                        biomorph.xmin = Number(text)
+                                    }
                                 }
-                            }
 
-                            Label { text: "Y min" }
+                                Label { text: "X max" }
 
-                            TextField {
-                                Layout.fillWidth: true
-                                text: biomorph.ymin
-
-                                validator: DoubleValidator {}
-
-                                onEditingFinished: {
-                                    biomorph.ymin = Number(text)
+                                TextField {
+                                    Layout.fillWidth: true
+                                    text: biomorph.xmax
+                                    validator: DoubleValidator {}
+                                    onEditingFinished: {
+                                        biomorph.xmax = Number(text)
+                                    }
                                 }
-                            }
 
-                            Label { text: "Y max" }
+                                Label { text: "Y min" }
 
-                            TextField {
-                                Layout.fillWidth: true
-                                text: biomorph.ymax
+                                TextField {
+                                    Layout.fillWidth: true
+                                    text: biomorph.ymin
+                                    validator: DoubleValidator {}
+                                    onEditingFinished: {
+                                        biomorph.ymin = Number(text)
+                                    }
+                                }
 
-                                validator: DoubleValidator {}
+                                Label { text: "Y max" }
 
-                                onEditingFinished: {
-                                    biomorph.ymax = Number(text)
+                                TextField {
+                                    Layout.fillWidth: true
+                                    text: biomorph.ymax
+                                    validator: DoubleValidator {}
+                                    onEditingFinished: {
+                                        biomorph.ymax = Number(text)
+                                    }
                                 }
                             }
                         }
